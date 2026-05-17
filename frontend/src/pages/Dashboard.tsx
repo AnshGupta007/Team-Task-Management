@@ -1,0 +1,188 @@
+// ─── Dashboard Page ────────────────────────────────────────
+import { useQuery } from '@tanstack/react-query';
+import { dashboardApi } from '../api/tasks.api';
+import {
+  PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
+} from 'recharts';
+import {
+  LayoutDashboard, CheckCircle2, Clock, AlertTriangle, FolderKanban,
+  ListTodo, Loader2, Activity,
+} from 'lucide-react';
+import { formatRelativeTime, activityLabels, getInitials } from '../utils/helpers';
+
+const STATUS_COLORS = ['#64748b', '#3b82f6', '#22c55e'];
+const PRIORITY_COLORS = ['#22c55e', '#eab308', '#f97316', '#ef4444'];
+
+export default function Dashboard() {
+  const { data, isLoading } = useQuery({
+    queryKey: ['dashboard'],
+    queryFn: () => dashboardApi.getStats().then((r) => r.data),
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
+      </div>
+    );
+  }
+
+  const stats = data?.stats;
+  const activity = data?.recentActivity || [];
+
+  const statusData = [
+    { name: 'To Do', value: stats?.tasksByStatus.todo || 0 },
+    { name: 'In Progress', value: stats?.tasksByStatus.inProgress || 0 },
+    { name: 'Done', value: stats?.tasksByStatus.done || 0 },
+  ];
+
+  const priorityData = [
+    { name: 'Low', value: stats?.tasksByPriority.low || 0 },
+    { name: 'Medium', value: stats?.tasksByPriority.medium || 0 },
+    { name: 'High', value: stats?.tasksByPriority.high || 0 },
+    { name: 'Critical', value: stats?.tasksByPriority.critical || 0 },
+  ];
+
+  const memberData = stats?.tasksPerMember?.map((m) => ({
+    name: m.name.split(' ')[0],
+    tasks: m.count,
+  })) || [];
+
+  const cards = [
+    { label: 'Total Tasks', value: stats?.totalTasks || 0, icon: ListTodo, color: '#6366f1' },
+    { label: 'Projects', value: stats?.totalProjects || 0, icon: FolderKanban, color: '#8b5cf6' },
+    { label: 'My Tasks', value: stats?.myTasks || 0, icon: CheckCircle2, color: '#3b82f6' },
+    { label: 'Due Soon', value: stats?.dueSoonTasks || 0, icon: Clock, color: '#f59e0b' },
+    { label: 'Overdue', value: stats?.overdueTasks || 0, icon: AlertTriangle, color: '#ef4444' },
+  ];
+
+  return (
+    <div className="space-y-6 animate-fade-in">
+      <div>
+        <h1 className="text-2xl font-bold flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+          <LayoutDashboard className="w-6 h-6 text-indigo-500" /> Dashboard
+        </h1>
+        <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>Overview of your tasks and projects</p>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        {cards.map((card) => (
+          <div key={card.label} className="card p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg" style={{ background: card.color + '15' }}>
+                <card.icon className="w-5 h-5" style={{ color: card.color }} />
+              </div>
+              <div>
+                <p className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{card.value}</p>
+                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{card.label}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Tasks by Status Pie Chart */}
+        <div className="card p-5">
+          <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Tasks by Status</h3>
+          <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+              <Pie data={statusData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" paddingAngle={3}>
+                {statusData.map((_, i) => <Cell key={i} fill={STATUS_COLORS[i]} />)}
+              </Pie>
+              <Tooltip
+                contentStyle={{
+                  background: 'var(--surface)',
+                  border: '1px solid var(--border)',
+                  borderRadius: '8px',
+                  color: 'var(--text-primary)',
+                }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="flex justify-center gap-4 mt-2">
+            {statusData.map((s, i) => (
+              <div key={s.name} className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--text-secondary)' }}>
+                <span className="w-2.5 h-2.5 rounded-full" style={{ background: STATUS_COLORS[i] }} />
+                {s.name} ({s.value})
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Tasks per Member Bar Chart */}
+        <div className="card p-5">
+          <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Tasks per Member</h3>
+          {memberData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={memberData}>
+                <XAxis dataKey="name" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
+                <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
+                <Tooltip contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-primary)' }} />
+                <Bar dataKey="tasks" fill="#6366f1" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-[220px] flex items-center justify-center">
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No data yet</p>
+            </div>
+          )}
+        </div>
+
+        {/* Tasks by Priority */}
+        <div className="card p-5">
+          <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Tasks by Priority</h3>
+          <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+              <Pie data={priorityData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" paddingAngle={3}>
+                {priorityData.map((_, i) => <Cell key={i} fill={PRIORITY_COLORS[i]} />)}
+              </Pie>
+              <Tooltip contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-primary)' }} />
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="flex flex-wrap justify-center gap-3 mt-2">
+            {priorityData.map((p, i) => (
+              <div key={p.name} className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--text-secondary)' }}>
+                <span className="w-2.5 h-2.5 rounded-full" style={{ background: PRIORITY_COLORS[i] }} />
+                {p.name} ({p.value})
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Activity Feed */}
+      <div className="card p-5">
+        <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+          <Activity className="w-4 h-4 text-indigo-500" /> Recent Activity
+        </h3>
+        {activity.length > 0 ? (
+          <div className="space-y-3 max-h-80 overflow-y-auto">
+            {activity.map((a) => (
+              <div key={a.id} className="flex items-start gap-3 text-sm animate-slide-in">
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0 mt-0.5"
+                  style={{ backgroundColor: a.user.avatar || '#6366f1' }}
+                >
+                  {getInitials(a.user.name)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p style={{ color: 'var(--text-primary)' }}>
+                    <span className="font-medium">{a.user.name}</span>{' '}
+                    <span style={{ color: 'var(--text-secondary)' }}>{activityLabels[a.action] || a.action}</span>
+                  </p>
+                  {a.details && <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{a.details}</p>}
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{formatRelativeTime(a.createdAt)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-center py-8" style={{ color: 'var(--text-muted)' }}>No activity yet. Create a project to get started!</p>
+        )}
+      </div>
+    </div>
+  );
+}

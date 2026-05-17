@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+/* ─── CSS Custom Properties (Design Tokens) ──────────────── */
+:root {
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --primary-light: #e0e7ff;
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --surface-hover: #f1f5f9;
+  --border: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+  --sidebar-width: 260px;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --primary: #818cf8;
+  --primary-hover: #6366f1;
+  --primary-light: #312e81;
+  --background: #0f172a;
+  --surface: #1e293b;
+  --surface-hover: #334155;
+  --border: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+}
+
+/* ─── Base Styles ────────────────────────────────────────── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--background);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+/* ─── Utility Classes ────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ─── Priority Badge Colors ──────────────────────────────── */
+.priority-critical { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+.priority-high { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
+.priority-medium { background: #fefce8; color: #ca8a04; border: 1px solid #fef08a; }
+.priority-low { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+.dark .priority-critical { background: #450a0a; color: #fca5a5; border-color: #7f1d1d; }
+.dark .priority-high { background: #431407; color: #fdba74; border-color: #7c2d12; }
+.dark .priority-medium { background: #422006; color: #fde047; border-color: #713f12; }
+.dark .priority-low { background: #052e16; color: #86efac; border-color: #14532d; }
+
+/* ─── Status Badge Colors ────────────────────────────────── */
+.status-todo { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+.status-in-progress { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+.status-done { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+.dark .status-todo { background: #1e293b; color: #94a3b8; border-color: #475569; }
+.dark .status-in-progress { background: #172554; color: #60a5fa; border-color: #1e3a5f; }
+.dark .status-done { background: #052e16; color: #86efac; border-color: #14532d; }
+
+/* ─── Skeleton Loading ───────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--surface) 25%, var(--surface-hover) 50%, var(--surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius);
+}
+
+/* ─── Animations ─────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-in { animation: fadeIn 0.3s ease-out; }
+.animate-slide-in { animation: slideIn 0.3s ease-out; }
+

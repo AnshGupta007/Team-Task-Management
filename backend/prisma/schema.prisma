@@ -1,0 +1,122 @@
+// Prisma Schema for Team Task Manager
+// Defines all database models with proper relations
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── User Model ───────────────────────────────────────────
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  avatar    String?  // Stores a hex color for initials-based avatar
+  createdAt DateTime @default(now())
+
+  // Relations
+  projectMembers ProjectMember[]
+  assignedTasks  Task[]          @relation("AssignedTo")
+  createdTasks   Task[]          @relation("CreatedBy")
+  activityLogs   ActivityLog[]
+  refreshTokens  RefreshToken[]
+}
+
+// ─── Project Model ────────────────────────────────────────
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  color       String   @default("#6366f1")
+  createdAt   DateTime @default(now())
+
+  // Relations
+  members      ProjectMember[]
+  tasks        Task[]
+  activityLogs ActivityLog[]
+}
+
+// ─── Project Member (Junction Table) ──────────────────────
+model ProjectMember {
+  id        String   @id @default(uuid())
+  role      Role     @default(MEMBER)
+  userId    String
+  projectId String
+  joinedAt  DateTime @default(now())
+
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+}
+
+// ─── Task Model ───────────────────────────────────────────
+model Task {
+  id           String     @id @default(uuid())
+  title        String
+  description  String?
+  status       TaskStatus @default(TODO)
+  priority     Priority   @default(MEDIUM)
+  dueDate      DateTime?
+  projectId    String
+  assignedToId String?
+  createdById  String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  // Relations
+  project    Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignedTo User?   @relation("AssignedTo", fields: [assignedToId], references: [id], onDelete: SetNull)
+  createdBy  User    @relation("CreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
+}
+
+// ─── Activity Log ─────────────────────────────────────────
+model ActivityLog {
+  id        String   @id @default(uuid())
+  action    String
+  details   String?
+  userId    String
+  projectId String
+  createdAt DateTime @default(now())
+
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+// ─── Refresh Token ────────────────────────────────────────
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─── Enums ────────────────────────────────────────────────
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
