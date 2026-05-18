@@ -108,7 +108,7 @@ export default function Projects() {
                       className={`w-7 h-7 rounded-full transition-all ${
                         color === c ? 'ring-2 ring-offset-2 ring-indigo-500' : 'ring-1 ring-transparent hover:ring-[var(--border)]'
                       }`}
-                      style={{ backgroundColor: c, ringColor: color === c ? 'var(--primary)' : undefined }}
+                      style={{ backgroundColor: c }}
                     />
                   ))}
                 </div>
