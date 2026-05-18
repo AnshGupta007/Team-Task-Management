@@ -1,4 +1,3 @@
-// ─── Dashboard Page ────────────────────────────────────────
 import { useQuery } from '@tanstack/react-query';
 import { dashboardApi } from '../api/tasks.api';
 import {
@@ -6,7 +5,7 @@ import {
 } from 'recharts';
 import {
   LayoutDashboard, CheckCircle2, Clock, AlertTriangle, FolderKanban,
-  ListTodo, Loader2, Activity,
+  ListTodo, Loader2, Activity, TrendingUp, Users,
 } from 'lucide-react';
 import { formatRelativeTime, activityLabels, getInitials } from '../utils/helpers';
 
@@ -22,7 +21,7 @@ export default function Dashboard() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
+        <Loader2 className="w-8 h-8 animate-spin" style={{ color: 'var(--primary)' }} />
       </div>
     );
   }
@@ -58,19 +57,24 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div>
-        <h1 className="text-2xl font-bold flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-          <LayoutDashboard className="w-6 h-6 text-indigo-500" /> Dashboard
-        </h1>
-        <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>Overview of your tasks and projects</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+            <LayoutDashboard className="w-6 h-6" style={{ color: 'var(--primary)' }} /> Dashboard
+          </h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>Overview of your tasks and projects</p>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium" style={{ background: 'var(--primary-light)', color: 'var(--primary)' }}>
+          <TrendingUp className="w-3.5 h-3.5" />
+          {stats?.totalTasks || 0} total tasks
+        </div>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        {cards.map((card) => (
-          <div key={card.label} className="card p-4">
+        {cards.map((card, i) => (
+          <div key={card.label} className="card p-4 hover:shadow-md transition-all" style={{ animationDelay: `${i * 50}ms` }}>
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg" style={{ background: card.color + '15' }}>
+              <div className="p-2.5 rounded-lg" style={{ background: card.color + '15' }}>
                 <card.icon className="w-5 h-5" style={{ color: card.color }} />
               </div>
               <div>
@@ -82,11 +86,12 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Tasks by Status Pie Chart */}
         <div className="card p-5">
-          <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Tasks by Status</h3>
+          <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+            <div className="w-2 h-2 rounded-full bg-slate-400" />
+            Tasks by Status
+          </h3>
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie data={statusData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" paddingAngle={3}>
@@ -98,6 +103,7 @@ export default function Dashboard() {
                   border: '1px solid var(--border)',
                   borderRadius: '8px',
                   color: 'var(--text-primary)',
+                  boxShadow: 'var(--shadow-lg)',
                 }}
               />
             </PieChart>
@@ -112,34 +118,41 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Tasks per Member Bar Chart */}
         <div className="card p-5">
-          <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Tasks per Member</h3>
+          <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+            <div className="w-2 h-2 rounded-full bg-blue-500" />
+            Tasks per Member
+          </h3>
           {memberData.length > 0 ? (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={memberData}>
-                <XAxis dataKey="name" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
-                <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
-                <Tooltip contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-primary)' }} />
+                <XAxis dataKey="name" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-primary)', boxShadow: 'var(--shadow-lg)' }} />
                 <Bar dataKey="tasks" fill="#6366f1" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
             <div className="h-[220px] flex items-center justify-center">
-              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No data yet</p>
+              <div className="text-center">
+                <Users className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
+                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No data yet</p>
+              </div>
             </div>
           )}
         </div>
 
-        {/* Tasks by Priority */}
         <div className="card p-5">
-          <h3 className="text-sm font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Tasks by Priority</h3>
+          <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+            <div className="w-2 h-2 rounded-full bg-orange-400" />
+            Tasks by Priority
+          </h3>
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie data={priorityData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" paddingAngle={3}>
                 {priorityData.map((_, i) => <Cell key={i} fill={PRIORITY_COLORS[i]} />)}
               </Pie>
-              <Tooltip contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-primary)' }} />
+              <Tooltip contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-primary)', boxShadow: 'var(--shadow-lg)' }} />
             </PieChart>
           </ResponsiveContainer>
           <div className="flex flex-wrap justify-center gap-3 mt-2">
@@ -153,17 +166,16 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Activity Feed */}
       <div className="card p-5">
         <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-          <Activity className="w-4 h-4 text-indigo-500" /> Recent Activity
+          <Activity className="w-4 h-4" style={{ color: 'var(--primary)' }} /> Recent Activity
         </h3>
         {activity.length > 0 ? (
-          <div className="space-y-3 max-h-80 overflow-y-auto">
-            {activity.map((a) => (
-              <div key={a.id} className="flex items-start gap-3 text-sm animate-slide-in">
+          <div className="space-y-1 max-h-80 overflow-y-auto">
+            {activity.map((a, i) => (
+              <div key={a.id} className="flex items-start gap-3 px-3 py-2.5 rounded-lg transition-colors hover:bg-[var(--surface-hover)]" style={{ animationDelay: `${i * 30}ms` }}>
                 <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0 mt-0.5"
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0 mt-0.5 ring-2 ring-[var(--surface)]"
                   style={{ backgroundColor: a.user.avatar || '#6366f1' }}
                 >
                   {getInitials(a.user.name)}
@@ -180,7 +192,10 @@ export default function Dashboard() {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-center py-8" style={{ color: 'var(--text-muted)' }}>No activity yet. Create a project to get started!</p>
+          <div className="text-center py-8">
+            <Activity className="w-10 h-10 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No activity yet. Create a project to get started!</p>
+          </div>
         )}
       </div>
     </div>

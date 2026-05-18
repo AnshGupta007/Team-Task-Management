@@ -1,8 +1,7 @@
-// ─── Signup Page ───────────────────────────────────────────
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FolderKanban, User, Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { FolderKanban, Eye, EyeOff, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function Signup() {
@@ -29,54 +28,48 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'var(--background)' }}>
-      <div className="w-full max-w-md animate-fade-in">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" style={{ background: 'var(--background)' }}>
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-purple-500/5 pointer-events-none" />
+      <div className="w-full max-w-md animate-fade-in relative">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-indigo-500 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-500/30">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-500/30">
             <FolderKanban className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Create your account</h1>
-          <p className="mt-1" style={{ color: 'var(--text-secondary)' }}>Get started with TaskFlow today</p>
+          <p className="mt-1.5" style={{ color: 'var(--text-secondary)' }}>Get started with TaskFlow today</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="card p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="card p-6 space-y-5 shadow-lg">
           <div>
             <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-primary)' }}>Full Name</label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-              <input
-                type="text" value={name} onChange={(e) => setName(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30"
-                style={{ background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
-                placeholder="John Doe" required
-              />
-            </div>
+            <input
+              type="text" value={name} onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500"
+              style={{ background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
+              placeholder="John Doe" required
+            />
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-primary)' }}>Email</label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-              <input
-                type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-lg text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30"
-                style={{ background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
-                placeholder="you@example.com" required
-              />
-            </div>
+            <input
+              type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500"
+              style={{ background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
+              placeholder="you@example.com" required
+            />
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-primary)' }}>Password</label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
               <input
                 type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-10 py-2.5 rounded-lg text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30"
+                className="w-full px-4 pr-12 py-2.5 rounded-lg text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500"
                 style={{ background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
                 placeholder="Min 6 characters" required minLength={6}
               />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2">
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md hover:bg-[var(--surface-hover)] transition-colors">
                 {showPassword ? <EyeOff className="w-4 h-4" style={{ color: 'var(--text-muted)' }} /> : <Eye className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />}
               </button>
             </div>
@@ -84,7 +77,7 @@ export default function Signup() {
 
           <button
             type="submit" disabled={loading}
-            className="w-full py-2.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-semibold transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white text-sm font-semibold transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-md shadow-indigo-500/25"
           >
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             Create Account
@@ -92,7 +85,7 @@ export default function Signup() {
 
           <p className="text-center text-sm" style={{ color: 'var(--text-secondary)' }}>
             Already have an account?{' '}
-            <Link to="/login" className="text-indigo-500 hover:text-indigo-400 font-medium">Sign in</Link>
+            <Link to="/login" className="text-indigo-500 hover:text-indigo-400 font-medium transition-colors">Sign in</Link>
           </p>
         </form>
       </div>

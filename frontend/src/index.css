@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-/* ─── CSS Custom Properties (Design Tokens) ──────────────── */
 :root {
   --primary: #6366f1;
   --primary-hover: #4f46e5;
@@ -18,22 +17,29 @@
   --info: #3b82f6;
   --sidebar-width: 260px;
   --radius: 0.5rem;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.06), 0 4px 6px rgba(0,0,0,0.04);
 }
 
 .dark {
   --primary: #818cf8;
   --primary-hover: #6366f1;
   --primary-light: #312e81;
-  --background: #0f172a;
-  --surface: #1e293b;
-  --surface-hover: #334155;
-  --border: #334155;
+  --background: #0b1121;
+  --surface: #131b2e;
+  --surface-hover: #1e293b;
+  --border: #1e293b;
   --text-primary: #f1f5f9;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+  --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.3);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.3);
 }
 
-/* ─── Base Styles ────────────────────────────────────────── */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -44,23 +50,32 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─── Scrollbar ──────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
 
-/* ─── Utility Classes ────────────────────────────────────── */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  box-shadow: var(--shadow);
   transition: all 0.2s ease;
 }
 
 .card:hover {
   border-color: var(--primary);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+  box-shadow: var(--shadow-md);
+}
+
+.card-hoverable {
+  cursor: pointer;
+}
+
+.card-hoverable:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+  transform: translateY(-1px);
 }
 
 .glass {
@@ -69,7 +84,10 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* ─── Priority Badge Colors ──────────────────────────────── */
+.backdrop-blur {
+  backdrop-filter: blur(4px);
+}
+
 .priority-critical { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
 .priority-high { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
 .priority-medium { background: #fefce8; color: #ca8a04; border: 1px solid #fef08a; }
@@ -79,15 +97,13 @@ body {
 .dark .priority-medium { background: #422006; color: #fde047; border-color: #713f12; }
 .dark .priority-low { background: #052e16; color: #86efac; border-color: #14532d; }
 
-/* ─── Status Badge Colors ────────────────────────────────── */
 .status-todo { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
-.status-in-progress { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+.status-in_progress { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
 .status-done { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
 .dark .status-todo { background: #1e293b; color: #94a3b8; border-color: #475569; }
-.dark .status-in-progress { background: #172554; color: #60a5fa; border-color: #1e3a5f; }
+.dark .status-in_progress { background: #172554; color: #60a5fa; border-color: #1e3a5f; }
 .dark .status-done { background: #052e16; color: #86efac; border-color: #14532d; }
 
-/* ─── Skeleton Loading ───────────────────────────────────── */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -100,7 +116,6 @@ body {
   border-radius: var(--radius);
 }
 
-/* ─── Animations ─────────────────────────────────────────── */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -111,6 +126,24 @@ body {
   to { opacity: 1; transform: translateX(0); }
 }
 
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 .animate-slide-in { animation: slideIn 0.3s ease-out; }
+.animate-scale-in { animation: scaleIn 0.2s ease-out; }
 
+input, select, textarea, button {
+  font-family: inherit;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);
+  cursor: pointer;
+}
+
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.8);
+}
