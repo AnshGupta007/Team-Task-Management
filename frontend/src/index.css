@@ -8,7 +8,7 @@
   --background: #f0f2f5;
   --surface: #ffffff;
   --surface-hover: #f1f5f9;
-  --border: #e2e8f0;
+  --border: #cbd5e1;
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
@@ -28,10 +28,10 @@
   --background: #080c1a;
   --surface: #111827;
   --surface-hover: #1e293b;
-  --border: #1e293b;
+  --border: #334155;
   --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
-  --text-muted: #64748b;
+  --text-muted: #94a3b8;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -74,7 +74,7 @@ body {
 
 .dark .card-hoverable:hover {
   box-shadow: 0 8px 28px rgba(96, 165, 250, 0.12);
-  border-color: rgba(96, 165, 250, 0.4);
+  border-color: rgba(96, 165, 250, 0.5);
 }
 
 .glass {

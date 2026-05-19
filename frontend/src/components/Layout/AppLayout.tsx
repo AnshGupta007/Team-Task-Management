@@ -114,7 +114,7 @@ export default function AppLayout() {
           <span className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>TaskFlow</span>
         </div>
 
-        <div className="p-5 md:p-7 lg:p-8 max-w-7xl mx-auto">
+        <div className="p-6 md:p-8 lg:p-10 max-w-7xl mx-auto">
           <Outlet />
         </div>
       </main>
