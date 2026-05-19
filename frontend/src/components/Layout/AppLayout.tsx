@@ -47,33 +47,28 @@ export default function AppLayout() {
 
         <nav className="flex-1 px-3 py-5 space-y-1">
           {navItems.map(({ to, icon: Icon, label }) => (
-            <NavLink
-              key={to}
-              to={to}
-              onClick={() => setSidebarOpen(false)}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative ${
-                  isActive
-                    ? 'text-white'
-                    : 'hover:bg-[var(--surface-hover)]'
-                }`
-              }
-              style={({ isActive }) => ({
-                color: isActive ? 'white' : 'var(--text-secondary)',
-                background: isActive ? 'var(--primary-gradient)' : undefined,
-                boxShadow: isActive ? '0 4px 12px rgba(99, 102, 241, 0.3)' : undefined,
-              })}
-            >
-              <Icon className="w-5 h-5 shrink-0" />
-              <span className="truncate">{label}</span>
-              {false && (
-                <div className="absolute right-2 w-1.5 h-1.5 rounded-full bg-white/60" />
+            <NavLink key={to} to={to} onClick={() => setSidebarOpen(false)}>
+              {({ isActive }) => (
+                <div
+                  className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    isActive ? 'text-white' : 'hover:bg-[var(--surface-hover)]'
+                  }`}
+                  style={{
+                    color: isActive ? 'white' : 'var(--text-secondary)',
+                    background: isActive ? 'var(--primary-gradient)' : undefined,
+                    boxShadow: isActive ? '0 4px 16px rgba(96, 165, 250, 0.35)' : undefined,
+                  }}
+                >
+                  <Icon className="w-5 h-5 shrink-0" />
+                  <span className="truncate">{label}</span>
+                  {isActive && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white/80 animate-pulse-glow" />}
+                </div>
               )}
             </NavLink>
           ))}
         </nav>
 
-        <div className="p-3 space-y-2 shrink-0" style={{ borderTop: '1px solid var(--border)' }}>
+        <div className="p-3 pb-4 space-y-2 shrink-0" style={{ borderTop: '1px solid var(--border)' }}>
           <button
             onClick={toggleTheme}
             className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-[var(--surface-hover)]"
@@ -85,19 +80,24 @@ export default function AppLayout() {
             <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
           </button>
 
-          <div className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{ background: 'var(--surface-hover)' }}>
+          <div className="flex items-center gap-3 px-4 py-3.5 rounded-xl" style={{ background: 'var(--surface-hover)' }}>
             <div
-              className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-semibold shrink-0 ring-2 ring-[var(--surface)]"
+              className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 ring-2 ring-[var(--surface)] shadow-md"
               style={{ background: 'var(--primary-gradient)' }}
             >
               {getInitials(user?.name || 'U')}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{user?.name}</p>
-              <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{user?.email}</p>
+              <p className="text-xs truncate" style={{ color: 'var(--text-secondary)' }}>{user?.email}</p>
             </div>
-            <button onClick={handleLogout} className="p-1.5 rounded-lg hover:bg-red-500/10 transition-colors" title="Logout">
-              <LogOut className="w-4 h-4 text-red-400" />
+            <button
+              onClick={handleLogout}
+              className="p-2 rounded-xl transition-all duration-200 hover:bg-red-500/15 hover:scale-105 active:scale-95"
+              title="Logout"
+              style={{ color: 'var(--danger)' }}
+            >
+              <LogOut className="w-4 h-4" />
             </button>
           </div>
         </div>
