@@ -159,18 +159,18 @@ export default function ProjectDetail() {
   }
 
   return (
-    <div className="space-y-5 animate-fade-in">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl flex items-center justify-center shadow-sm" style={{ backgroundColor: project.color + '15' }}>
-            <div className="w-4 h-4 rounded-md" style={{ backgroundColor: project.color }} />
+    <div className="space-y-6 animate-fade-in">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-sm shrink-0" style={{ backgroundColor: project.color + '15' }}>
+            <div className="w-5 h-5 rounded-md" style={{ backgroundColor: project.color }} />
           </div>
           <div>
             <h1 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{project.name}</h1>
             {project.description && <p className="text-sm mt-0.5" style={{ color: 'var(--text-secondary)' }}>{project.description}</p>}
           </div>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap shrink-0">
           <button onClick={() => setShowActivity(!showActivity)}
             className={`btn-secondary flex items-center gap-1.5 px-3 py-2 text-sm ${
               showActivity ? 'bg-indigo-500/10 text-indigo-500 border-indigo-500/30' : ''
@@ -190,17 +190,17 @@ export default function ProjectDetail() {
         </div>
       </div>
 
-      <div className="card p-3 flex flex-wrap items-center gap-2">
-        <Users className="w-4 h-4 ml-1 shrink-0" style={{ color: 'var(--text-muted)' }} />
+      <div className="flex flex-wrap items-center gap-3">
+        {members.length > 0 && <Users className="w-4 h-4 shrink-0" style={{ color: 'var(--text-secondary)' }} />}
         {members.map((m: ProjectMember) => (
           <div key={m.id} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors hover:bg-[var(--surface-hover)]"
-            style={{ background: 'var(--surface-hover)', color: 'var(--text-secondary)' }}>
+            style={{ background: 'var(--surface-hover)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
             <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] text-white font-semibold shrink-0"
               style={{ background: 'var(--primary-gradient)' }}>
               {getInitials(m.user.name)}
             </div>
             <span>{m.user.name.split(' ')[0]}</span>
-            {m.role === 'ADMIN' && <span className="text-indigo-500 text-[10px] ml-0.5">★</span>}
+            {m.role === 'ADMIN' && <span className="text-indigo-400 text-[10px] ml-0.5">★</span>}
             {isAdmin && m.role !== 'ADMIN' && (
               <button onClick={() => removeMemberMutation.mutate(m.userId)} className="ml-0.5 p-0.5 rounded hover:bg-red-500/20 transition-colors">
                 <X className="w-3 h-3 text-red-400" />
@@ -209,7 +209,7 @@ export default function ProjectDetail() {
           </div>
         ))}
         {members.length === 0 && (
-          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>No members yet</span>
+          <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>No members yet</span>
         )}
       </div>
 
@@ -218,14 +218,14 @@ export default function ProjectDetail() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
           <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-3 py-2 rounded-xl text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500"
-            style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
+            style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}
             placeholder="Search tasks..." />
         </div>
         <div className="flex items-center gap-2">
           <Filter className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
           <select value={filterPriority} onChange={(e) => setFilterPriority(e.target.value)}
             className="px-3 py-2 rounded-xl text-sm outline-none cursor-pointer transition-all focus:ring-2 focus:ring-indigo-500/30"
-            style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}>
+            style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
             <option value="">All Priorities</option>
             <option value="CRITICAL">Critical</option>
             <option value="HIGH">High</option>
@@ -234,7 +234,7 @@ export default function ProjectDetail() {
           </select>
           <select value={filterAssignee} onChange={(e) => setFilterAssignee(e.target.value)}
             className="px-3 py-2 rounded-xl text-sm outline-none cursor-pointer transition-all focus:ring-2 focus:ring-indigo-500/30"
-            style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}>
+            style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
             <option value="">All Members</option>
             {members.map((m: ProjectMember) => <option key={m.userId} value={m.userId}>{m.user.name.split(' ')[0]}</option>)}
           </select>
@@ -244,23 +244,26 @@ export default function ProjectDetail() {
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {COLUMNS.map((col) => (
-            <div key={col.id} className="rounded-xl p-3" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
-              <div className="flex items-center gap-2 mb-3 px-1">
+            <div key={col.id} className="rounded-xl p-3 flex flex-col" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
+              <div className="flex items-center gap-2 mb-3 px-1 shrink-0">
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: col.color }} />
                 <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{col.label}</h3>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full ml-auto" style={{ background: col.color + '12', color: col.color }}>
+                <span className="text-xs font-bold px-2 py-0.5 rounded-full ml-auto" style={{ background: col.color + '15', color: col.color }}>
                   {groupedTasks[col.id].length}
                 </span>
               </div>
               <Droppable droppableId={col.id}>
                 {(provided, snapshot) => (
                   <div ref={provided.innerRef} {...provided.droppableProps}
-                    className="space-y-2 min-h-[120px] rounded-xl p-1 transition-colors"
-                    style={{ background: snapshot.isDraggingOver ? 'var(--surface-hover)' : 'transparent' }}>
+                    className="space-y-2 flex-1 rounded-xl p-1 transition-colors"
+                    style={{
+                      minHeight: '50vh',
+                      background: snapshot.isDraggingOver ? 'var(--surface-hover)' : 'transparent',
+                    }}>
                     {groupedTasks[col.id].length === 0 && !snapshot.isDraggingOver && (
-                      <div className="flex flex-col items-center justify-center py-8 text-xs" style={{ color: 'var(--text-muted)' }}>
-                        <div className="w-8 h-8 rounded-xl flex items-center justify-center mb-2" style={{ background: 'var(--surface-hover)' }}>
-                          <Plus className="w-4 h-4" />
+                      <div className="flex flex-col items-center justify-center py-8 text-xs" style={{ color: 'var(--text-secondary)' }}>
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2" style={{ background: 'var(--surface-hover)' }}>
+                          <Plus className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
                         </div>
                         No tasks yet
                       </div>
@@ -289,7 +292,7 @@ export default function ProjectDetail() {
                                 </span>
                               )}
                             </div>
-                            <p className="text-sm font-semibold leading-snug" style={{ color: 'afont-medium' }}>{task.title}</p>
+                            <p className="text-sm font-semibold leading-snug" style={{ color: 'var(--text-primary)' }}>{task.title}</p>
                             {task.description && (
                               <p className="text-xs mt-1 line-clamp-2 leading-relaxed" style={{ color: 'var(--text-muted)' }}>{task.description}</p>
                             )}

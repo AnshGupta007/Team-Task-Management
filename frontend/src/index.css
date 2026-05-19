@@ -178,6 +178,9 @@ body {
 
 input, select, textarea, button { font-family: inherit; }
 
+input::placeholder, textarea::placeholder { color: #94a3b8; opacity: 1; }
+.dark input::placeholder, .dark textarea::placeholder { color: #94a3b8; opacity: 1; }
+
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(0.5);
   cursor: pointer;
