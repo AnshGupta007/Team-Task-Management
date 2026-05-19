@@ -11,7 +11,7 @@
 
 **A modern, full-stack team task management application with Kanban boards, real-time analytics, role-based access control, and a beautiful dark mode UI.**
 
-[Live Demo](#) · [API Docs](#api-documentation) · [Setup Guide](#local-development-setup)
+[**Live Demo**](https://ansh-task-management-system.up.railway.app) · [API Docs](#api-documentation) · [Setup Guide](#local-development-setup)
 
 </div>
 
@@ -102,45 +102,47 @@ team-task-manager/
 ## 🚀 Local Development Setup
 
 ### Prerequisites
-- **Node.js** v18+
+- **Node.js** v20.19+ (required by Vite 8)
 - **PostgreSQL** running locally (or a cloud instance)
 - **npm** or **yarn**
 
-### 1. Clone the Repository
+### 1. Clone & Setup
 ```bash
 git clone https://github.com/AnshGupta007/team-task-manager.git
 cd team-task-manager
-```
 
-### 2. Setup Backend
-```bash
+# Install backend dependencies
 cd backend
 npm install
 
-# Configure environment variables
-cp .env.example .env
-# Edit .env with your PostgreSQL connection string and JWT secrets
+# Configure environment
+# Create backend/.env with:
+# DATABASE_URL=postgresql://user:pass@localhost:5432/task_manager?schema=public
+# JWT_SECRET=<random-64-char-hex>
+# JWT_REFRESH_SECRET=<random-64-char-hex>
+# PORT=5000
+# NODE_ENV=development
+# FRONTEND_URL=http://localhost:5173
 
-# Run database migrations
-npx prisma migrate dev --name init
+# Push Prisma schema to database
+npx prisma db push
 
-# Start the development server
+# Start backend dev server
 npm run dev
 ```
 
-### 3. Setup Frontend
+### 2. Setup Frontend (separate terminal)
 ```bash
 cd frontend
 npm install
 
-# Configure API URL (already set for localhost)
-# Edit .env if your backend runs on a different port
+# Create frontend/.env with:
+# VITE_API_URL=http://localhost:5000/api
 
-# Start the development server
 npm run dev
 ```
 
-### 4. Open in Browser
+### 3. Open in Browser
 Navigate to `http://localhost:5173`
 
 ---
@@ -208,6 +210,8 @@ Navigate to `http://localhost:5173`
 
 ## 🚢 Deployment on Railway
 
+This project uses a **single-service deployment** — the backend Express server builds and serves the frontend static files.
+
 ### Step 1: Create a Railway Account
 Go to [railway.app](https://railway.app) and sign up with GitHub.
 
@@ -215,29 +219,20 @@ Go to [railway.app](https://railway.app) and sign up with GitHub.
 1. Click **"New Project"** → **"Provision PostgreSQL"**
 2. Copy the `DATABASE_URL` from the PostgreSQL service variables
 
-### Step 3: Deploy Backend
+### Step 3: Deploy the App
 1. Click **"New Service"** → **"GitHub Repo"** → Select your repo
-2. Set root directory to `backend`
-3. Add environment variables:
+2. Add environment variables:
    - `DATABASE_URL` = (from step 2)
    - `JWT_SECRET` = (generate: `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"`)
    - `JWT_REFRESH_SECRET` = (generate another one)
-   - `PORT` = `5000`
    - `NODE_ENV` = `production`
-   - `FRONTEND_URL` = (your frontend URL, set after step 4)
-4. Set build command: `npm run build && npx prisma migrate deploy`
-5. Set start command: `npm start`
+3. Railway auto-detects the root `package.json` and `railway.json`. Build runs `npm run build` (installs backend deps + builds TS). Start runs `npm start` (auto-creates DB tables via `prisma db push` then starts the Express server).
+4. The app is available at `https://<your-project>.up.railway.app`
 
-### Step 4: Deploy Frontend
-1. Click **"New Service"** → **"GitHub Repo"** → Select your repo
-2. Set root directory to `frontend`
-3. Add environment variable:
-   - `VITE_API_URL` = `https://your-backend.railway.app/api`
-4. Set build command: `npm run build`
-5. Set start command: `npx serve dist -s -l 3000`
-
-### Step 5: Update CORS
-Go back to the backend service and update `FRONTEND_URL` to match your frontend's Railway URL.
+### Notes
+- **Node version**: Forced via `railway.json` (`NIXPACKS_NODE_VERSION: "22"`) to meet Vite 8's requirement (Node ≥20.19). Clear build cache in Railway dashboard if version change isn't picked up.
+- **Database**: Tables are auto-created on each start via `prisma db push --skip-generate`. No migration files are needed.
+- **Healthcheck**: `/api/health` returns `{"status":"ok"}` — this endpoint is registered before auth middleware so it's always accessible.
 
 ---
 

@@ -7,7 +7,7 @@ import { tasksApi } from '../api/tasks.api';
 import type { Task, TaskStatus, ProjectMember, ActivityLog } from '../types';
 import {
   Plus, X, Loader2, UserPlus, Trash2, Users, Clock, AlertTriangle,
-  Search, Filter, Calendar, Activity, FolderKanban,
+  Search, Filter, Calendar, Activity, FolderKanban, GripVertical,
 } from 'lucide-react';
 import {
   getInitials, formatDate, formatRelativeTime, priorityConfig,
@@ -153,7 +153,7 @@ export default function ProjectDetail() {
         <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: 'var(--surface-hover)' }}>
           <FolderKanban className="w-8 h-8" style={{ color: 'var(--text-muted)' }} />
         </div>
-        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Project not found</p>
+        <p className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>Project not found</p>
       </div>
     );
   }
@@ -162,8 +162,8 @@ export default function ProjectDetail() {
     <div className="space-y-5 animate-fade-in">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg flex items-center justify-center shadow-sm" style={{ backgroundColor: project.color + '20' }}>
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: project.color }} />
+          <div className="w-11 h-11 rounded-xl flex items-center justify-center shadow-sm" style={{ backgroundColor: project.color + '15' }}>
+            <div className="w-4 h-4 rounded-md" style={{ backgroundColor: project.color }} />
           </div>
           <div>
             <h1 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{project.name}</h1>
@@ -172,21 +172,17 @@ export default function ProjectDetail() {
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <button onClick={() => setShowActivity(!showActivity)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-              showActivity ? 'bg-indigo-500/10 text-indigo-500' : 'hover:bg-[var(--surface-hover)]'
-            }`}
-            style={{ border: '1px solid var(--border)', color: showActivity ? undefined : 'var(--text-secondary)' }}>
+            className={`btn-secondary flex items-center gap-1.5 px-3 py-2 text-sm ${
+              showActivity ? 'bg-indigo-500/10 text-indigo-500 border-indigo-500/30' : ''
+            }`}>
             <Activity className="w-4 h-4" /> Activity
           </button>
           {isAdmin && (
             <>
-              <button onClick={() => setShowAddMember(true)}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all hover:bg-[var(--surface-hover)]"
-                style={{ border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
+              <button onClick={() => setShowAddMember(true)} className="btn-secondary flex items-center gap-1.5 px-3 py-2 text-sm">
                 <UserPlus className="w-4 h-4" /> Add Member
               </button>
-              <button onClick={() => setShowCreateTask(true)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white text-sm font-semibold transition-all shadow-md shadow-indigo-500/25">
+              <button onClick={() => setShowCreateTask(true)} className="btn-primary flex items-center gap-1.5 px-4 py-2 text-sm">
                 <Plus className="w-4 h-4" /> New Task
               </button>
             </>
@@ -197,16 +193,16 @@ export default function ProjectDetail() {
       <div className="card p-3 flex flex-wrap items-center gap-2">
         <Users className="w-4 h-4 ml-1 shrink-0" style={{ color: 'var(--text-muted)' }} />
         {members.map((m: ProjectMember) => (
-          <div key={m.id} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition-colors hover:bg-[var(--surface-hover)]"
+          <div key={m.id} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors hover:bg-[var(--surface-hover)]"
             style={{ background: 'var(--surface-hover)', color: 'var(--text-secondary)' }}>
             <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] text-white font-semibold shrink-0"
-              style={{ backgroundColor: m.user.avatar || '#6366f1' }}>
+              style={{ background: 'var(--primary-gradient)' }}>
               {getInitials(m.user.name)}
             </div>
-            {m.user.name.split(' ')[0]}
-            {m.role === 'ADMIN' && <span className="text-indigo-500 font-semibold ml-0.5">★</span>}
+            <span>{m.user.name.split(' ')[0]}</span>
+            {m.role === 'ADMIN' && <span className="text-indigo-500 text-[10px] ml-0.5">★</span>}
             {isAdmin && m.role !== 'ADMIN' && (
-              <button onClick={() => removeMemberMutation.mutate(m.userId)} className="ml-1 p-0.5 rounded hover:bg-red-500/20 transition-colors">
+              <button onClick={() => removeMemberMutation.mutate(m.userId)} className="ml-0.5 p-0.5 rounded hover:bg-red-500/20 transition-colors">
                 <X className="w-3 h-3 text-red-400" />
               </button>
             )}
@@ -220,17 +216,15 @@ export default function ProjectDetail() {
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-          <input
-            value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 rounded-lg text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500"
+          <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-3 py-2 rounded-xl text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500"
             style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
-            placeholder="Search tasks..."
-          />
+            placeholder="Search tasks..." />
         </div>
         <div className="flex items-center gap-2">
           <Filter className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
           <select value={filterPriority} onChange={(e) => setFilterPriority(e.target.value)}
-            className="px-3 py-2 rounded-lg text-sm outline-none cursor-pointer transition-all focus:ring-2 focus:ring-indigo-500/30"
+            className="px-3 py-2 rounded-xl text-sm outline-none cursor-pointer transition-all focus:ring-2 focus:ring-indigo-500/30"
             style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}>
             <option value="">All Priorities</option>
             <option value="CRITICAL">Critical</option>
@@ -239,7 +233,7 @@ export default function ProjectDetail() {
             <option value="LOW">Low</option>
           </select>
           <select value={filterAssignee} onChange={(e) => setFilterAssignee(e.target.value)}
-            className="px-3 py-2 rounded-lg text-sm outline-none cursor-pointer transition-all focus:ring-2 focus:ring-indigo-500/30"
+            className="px-3 py-2 rounded-xl text-sm outline-none cursor-pointer transition-all focus:ring-2 focus:ring-indigo-500/30"
             style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}>
             <option value="">All Members</option>
             {members.map((m: ProjectMember) => <option key={m.userId} value={m.userId}>{m.user.name.split(' ')[0]}</option>)}
@@ -254,69 +248,60 @@ export default function ProjectDetail() {
               <div className="flex items-center gap-2 mb-3 px-1">
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: col.color }} />
                 <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{col.label}</h3>
-                <span className="text-xs font-medium px-2 py-0.5 rounded-full ml-auto" style={{ background: col.color + '15', color: col.color }}>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full ml-auto" style={{ background: col.color + '12', color: col.color }}>
                   {groupedTasks[col.id].length}
                 </span>
               </div>
               <Droppable droppableId={col.id}>
                 {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className="space-y-2 min-h-[120px] rounded-lg p-1 transition-colors"
-                    style={{ background: snapshot.isDraggingOver ? 'var(--surface-hover)' : 'transparent' }}
-                  >
+                  <div ref={provided.innerRef} {...provided.droppableProps}
+                    className="space-y-2 min-h-[120px] rounded-xl p-1 transition-colors"
+                    style={{ background: snapshot.isDraggingOver ? 'var(--surface-hover)' : 'transparent' }}>
                     {groupedTasks[col.id].length === 0 && !snapshot.isDraggingOver && (
                       <div className="flex flex-col items-center justify-center py-8 text-xs" style={{ color: 'var(--text-muted)' }}>
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center mb-2" style={{ background: 'var(--surface-hover)' }}>
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center mb-2" style={{ background: 'var(--surface-hover)' }}>
                           <Plus className="w-4 h-4" />
                         </div>
-                        No tasks
+                        No tasks yet
                       </div>
                     )}
                     {groupedTasks[col.id].map((task, index) => (
                       <Draggable key={task.id} draggableId={task.id} index={index}>
                         {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className="p-3 rounded-lg transition-all hover:shadow-md"
+                          <div ref={provided.innerRef} {...provided.draggableProps}
+                            className="p-3 rounded-xl transition-all hover:shadow-md bg-[var(--background)] border border-[var(--border)]"
                             style={{
                               ...provided.draggableProps.style,
-                              background: 'var(--background)',
-                              border: '1px solid var(--border)',
                               boxShadow: snapshot.isDragging ? '0 8px 24px rgba(0,0,0,0.15)' : undefined,
-                            }}
-                          >
-                            <div className="flex items-center gap-1.5 mb-2 flex-wrap">
-                              <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${priorityConfig[task.priority].class}`}>
+                            }}>
+                            <div {...provided.dragHandleProps} className="flex items-center gap-1.5 mb-2 flex-wrap">
+                              <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-md ${priorityConfig[task.priority].class}`}>
                                 {priorityConfig[task.priority].label}
                               </span>
                               {task.dueDate && isOverdue(task.dueDate) && task.status !== 'DONE' && (
-                                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-red-500/10 text-red-500 flex items-center gap-0.5">
+                                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-red-500/10 text-red-500 flex items-center gap-0.5">
                                   <AlertTriangle className="w-2.5 h-2.5" /> Overdue
                                 </span>
                               )}
                               {task.dueDate && isDueSoon(task.dueDate) && task.status !== 'DONE' && (
-                                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-500 flex items-center gap-0.5">
+                                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-500 flex items-center gap-0.5">
                                   <Clock className="w-2.5 h-2.5" /> Due soon
                                 </span>
                               )}
                             </div>
-                            <p className="text-sm font-medium leading-snug" style={{ color: 'var(--text-primary)' }}>{task.title}</p>
+                            <p className="text-sm font-semibold leading-snug" style={{ color: 'afont-medium' }}>{task.title}</p>
                             {task.description && (
                               <p className="text-xs mt-1 line-clamp-2 leading-relaxed" style={{ color: 'var(--text-muted)' }}>{task.description}</p>
                             )}
-                            <div className="flex items-center justify-between mt-3 pt-2" style={{ borderTop: '1px solid var(--border)' }}>
+                            <div className="flex items-center justify-between mt-3 pt-2.5" style={{ borderTop: '1px solid var(--border)' }}>
                               <div className="flex items-center gap-1.5">
                                 {task.assignedTo ? (
                                   <div className="flex items-center gap-1">
                                     <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] text-white font-semibold"
-                                      style={{ backgroundColor: task.assignedTo.avatar || '#6366f1' }}>
+                                      style={{ background: 'var(--primary-gradient)' }}>
                                       {getInitials(task.assignedTo.name)}
                                     </div>
-                                    <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{task.assignedTo.name.split(' ')[0]}</span>
+                                    <span className="text-[11px] font-medium" style={{ color: 'var(--text-muted)' }}>{task.assignedTo.name.split(' ')[0]}</span>
                                   </div>
                                 ) : (
                                   <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Unassigned</span>
@@ -324,13 +309,13 @@ export default function ProjectDetail() {
                               </div>
                               <div className="flex items-center gap-1.5">
                                 {task.dueDate && (
-                                  <span className="text-[10px] flex items-center gap-0.5" style={{ color: isOverdue(task.dueDate) && task.status !== 'DONE' ? '#ef4444' : 'var(--text-muted)' }}>
+                                  <span className="text-[10px] flex items-center gap-0.5 font-medium" style={{ color: isOverdue(task.dueDate) && task.status !== 'DONE' ? '#ef4444' : 'var(--text-muted)' }}>
                                     <Calendar className="w-2.5 h-2.5" />
                                     {formatDate(task.dueDate)}
                                   </span>
                                 )}
                                 {isAdmin && (
-                                  <button onClick={() => deleteTaskMutation.mutate(task.id)} className="p-1 rounded hover:bg-red-500/10 transition-colors">
+                                  <button onClick={() => deleteTaskMutation.mutate(task.id)} className="p-1 rounded-lg hover:bg-red-500/10 transition-colors">
                                     <Trash2 className="w-3 h-3 text-red-400" />
                                   </button>
                                 )}
@@ -350,34 +335,34 @@ export default function ProjectDetail() {
       </DragDropContext>
 
       {showCreateTask && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur" onClick={() => setShowCreateTask(false)}>
-          <div className="card p-6 w-full max-w-md animate-scale-in shadow-lg" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm" onClick={() => setShowCreateTask(false)}>
+          <div className="card p-6 w-full max-w-md animate-scale-in" onClick={(e) => e.stopPropagation()} style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
+            <div className="flex items-center justify-between mb-5">
               <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>New Task</h2>
-              <button onClick={() => setShowCreateTask(false)} className="p-1 rounded-md hover:bg-[var(--surface-hover)] transition-colors">
+              <button onClick={() => setShowCreateTask(false)} className="p-1.5 rounded-lg hover:bg-[var(--surface-hover)] transition-colors">
                 <X className="w-5 h-5" style={{ color: 'var(--text-muted)' }} />
               </button>
             </div>
             <form onSubmit={handleCreateTask} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Title *</label>
+                <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-primary)' }}>Title *</label>
                 <input value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500"
+                  className="w-full px-4 py-2.5 rounded-xl text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500"
                   style={{ background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
                   placeholder="Task title" required />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Description</label>
+                <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-primary)' }}>Description</label>
                 <textarea value={taskDesc} onChange={(e) => setTaskDesc(e.target.value)} rows={3}
-                  className="w-full px-3 py-2 rounded-lg text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 resize-none"
                   style={{ background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
                   placeholder="Describe the task..." />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Priority</label>
+                  <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-primary)' }}>Priority</label>
                   <select value={taskPriority} onChange={(e) => setTaskPriority(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg text-sm outline-none cursor-pointer transition-all focus:ring-2 focus:ring-indigo-500/30"
+                    className="w-full px-3 py-2.5 rounded-xl text-sm outline-none cursor-pointer transition-all focus:ring-2 focus:ring-indigo-500/30"
                     style={{ background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}>
                     <option value="LOW">Low</option>
                     <option value="MEDIUM">Medium</option>
@@ -386,23 +371,22 @@ export default function ProjectDetail() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Due Date</label>
+                  <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-primary)' }}>Due Date</label>
                   <input type="date" value={taskDueDate} onChange={(e) => setTaskDueDate(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30"
+                    className="w-full px-3 py-2.5 rounded-xl text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30"
                     style={{ background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--text-primary)' }} />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Assign To</label>
+                <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-primary)' }}>Assign To</label>
                 <select value={taskAssignee} onChange={(e) => setTaskAssignee(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg text-sm outline-none cursor-pointer transition-all focus:ring-2 focus:ring-indigo-500/30"
+                  className="w-full px-3 py-2.5 rounded-xl text-sm outline-none cursor-pointer transition-all focus:ring-2 focus:ring-indigo-500/30"
                   style={{ background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}>
                   <option value="">Unassigned</option>
                   {members.map((m: ProjectMember) => <option key={m.userId} value={m.userId}>{m.user.name}</option>)}
                 </select>
               </div>
-              <button type="submit" disabled={createTaskMutation.isPending}
-                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white text-sm font-semibold transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-md shadow-indigo-500/25">
+              <button type="submit" disabled={createTaskMutation.isPending} className="btn-primary w-full py-2.5 text-sm flex items-center justify-center gap-2">
                 {createTaskMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />} Create Task
               </button>
             </form>
@@ -411,21 +395,20 @@ export default function ProjectDetail() {
       )}
 
       {showAddMember && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur" onClick={() => setShowAddMember(false)}>
-          <div className="card p-6 w-full max-w-sm animate-scale-in shadow-lg" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm" onClick={() => setShowAddMember(false)}>
+          <div className="card p-6 w-full max-w-sm animate-scale-in" onClick={(e) => e.stopPropagation()} style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
+            <div className="flex items-center justify-between mb-5">
               <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>Add Member</h2>
-              <button onClick={() => setShowAddMember(false)} className="p-1 rounded-md hover:bg-[var(--surface-hover)] transition-colors">
+              <button onClick={() => setShowAddMember(false)} className="p-1.5 rounded-lg hover:bg-[var(--surface-hover)] transition-colors">
                 <X className="w-5 h-5" style={{ color: 'var(--text-muted)' }} />
               </button>
             </div>
             <form onSubmit={(e) => { e.preventDefault(); addMemberMutation.mutate(memberEmail); }} className="space-y-4">
               <input value={memberEmail} onChange={(e) => setMemberEmail(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500"
+                className="w-full px-4 py-2.5 rounded-xl text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500"
                 style={{ background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
                 placeholder="Enter member's email" type="email" required />
-              <button type="submit" disabled={addMemberMutation.isPending}
-                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white text-sm font-semibold transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-md shadow-indigo-500/25">
+              <button type="submit" disabled={addMemberMutation.isPending} className="btn-primary w-full py-2.5 text-sm flex items-center justify-center gap-2">
                 {addMemberMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />} Add Member
               </button>
             </form>
@@ -435,18 +418,18 @@ export default function ProjectDetail() {
 
       {showActivity && (
         <div className="card p-5 animate-fade-in">
-          <h3 className="text-sm font-semibold mb-3 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+          <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
             <Activity className="w-4 h-4" style={{ color: 'var(--primary)' }} /> Activity Log
           </h3>
-          <div className="space-y-2 max-h-64 overflow-y-auto">
+          <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
             {activityData?.map((a: ActivityLog) => (
-              <div key={a.id} className="flex items-start gap-2.5 px-2 py-2 rounded-lg text-xs transition-colors hover:bg-[var(--surface-hover)]">
+              <div key={a.id} className="flex items-start gap-2.5 px-3 py-2.5 rounded-xl text-xs transition-colors hover:bg-[var(--surface-hover)]">
                 <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] text-white font-semibold shrink-0 mt-0.5 ring-2 ring-[var(--surface)]"
-                  style={{ backgroundColor: a.user.avatar || '#6366f1' }}>
+                  style={{ background: 'var(--primary-gradient)' }}>
                   {getInitials(a.user.name)}
                 </div>
                 <div>
-                  <span className="font-medium" style={{ color: 'var(--text-primary)' }}>{a.user.name}</span>{' '}
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>{a.user.name}</span>{' '}
                   <span style={{ color: 'var(--text-secondary)' }}>{activityLabels[a.action] || a.action}</span>
                   {a.details && <p className="mt-0.5" style={{ color: 'var(--text-muted)' }}>{a.details}</p>}
                   <p className="mt-0.5" style={{ color: 'var(--text-muted)' }}>{formatRelativeTime(a.createdAt)}</p>
@@ -454,8 +437,10 @@ export default function ProjectDetail() {
               </div>
             ))}
             {(!activityData || activityData.length === 0) && (
-              <div className="text-center py-6">
-                <Activity className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
+              <div className="text-center py-8">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2" style={{ background: 'var(--surface-hover)' }}>
+                  <Activity className="w-5 h-5" style={{ color: 'var(--text-muted)' }} />
+                </div>
                 <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No activity yet</p>
               </div>
             )}

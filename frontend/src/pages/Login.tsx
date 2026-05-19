@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FolderKanban, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function Login() {
@@ -26,56 +26,70 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" style={{ background: 'var(--background)' }}>
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-purple-500/5 pointer-events-none" />
-      <div className="w-full max-w-md animate-fade-in relative">
-        <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-500/30">
-            <FolderKanban className="w-7 h-7 text-white" />
+    <div className="min-h-screen flex" style={{ background: 'var(--background)' }}>
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800">
+        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 25% 25%, white 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+        <div className="text-center px-12 relative z-10">
+          <div className="w-20 h-20 rounded-2xl bg-white/15 flex items-center justify-center mx-auto mb-6 backdrop-blur-sm border border-white/20">
+            <Sparkles className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Welcome back</h1>
-          <p className="mt-1.5" style={{ color: 'var(--text-secondary)' }}>Sign in to your TaskFlow account</p>
+          <h2 className="text-3xl font-bold text-white mb-3">TaskFlow</h2>
+          <p className="text-indigo-200 text-lg max-w-sm mx-auto leading-relaxed">Collaborate with your team, manage projects, and track tasks in real-time.</p>
         </div>
+      </div>
 
-        <form onSubmit={handleSubmit} className="card p-6 space-y-5 shadow-lg">
-          <div>
-            <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-primary)' }}>Email</label>
-            <input
-              type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500"
-              style={{ background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
-              placeholder="you@example.com" required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-primary)' }}>Password</label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 pr-12 py-2.5 rounded-lg text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500"
-                style={{ background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
-                placeholder="Enter your password" required
-              />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md hover:bg-[var(--surface-hover)] transition-colors">
-                {showPassword ? <EyeOff className="w-4 h-4" style={{ color: 'var(--text-muted)' }} /> : <Eye className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />}
-              </button>
+      <div className="flex-1 flex items-center justify-center p-6">
+        <div className="w-full max-w-sm animate-fade-in">
+          <div className="lg:hidden text-center mb-8">
+            <div className="w-14 h-14 rounded-2xl bg-[var(--primary-gradient)] flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-500/25">
+              <Sparkles className="w-7 h-7 text-white" />
             </div>
+            <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Welcome back</h1>
+            <p className="mt-1 text-sm" style={{ color: 'var(--text-secondary)' }}>Sign in to your TaskFlow account</p>
           </div>
 
-          <button
-            type="submit" disabled={loading}
-            className="w-full py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white text-sm font-semibold transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-md shadow-indigo-500/25"
-          >
-            {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-            Sign In
-          </button>
+          <div className="hidden lg:block text-center mb-8">
+            <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Welcome back</h1>
+            <p className="mt-1 text-sm" style={{ color: 'var(--text-secondary)' }}>Sign in to your account</p>
+          </div>
 
-          <p className="text-center text-sm" style={{ color: 'var(--text-secondary)' }}>
-            Don't have an account?{' '}
-            <Link to="/signup" className="text-indigo-500 hover:text-indigo-400 font-medium transition-colors">Sign up</Link>
-          </p>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-primary)' }}>Email</label>
+              <input
+                type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500"
+                style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
+                placeholder="you@example.com" required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--text-primary)' }}>Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 pr-12 py-2.5 rounded-xl text-sm outline-none transition-all focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500"
+                  style={{ background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
+                  placeholder="Enter your password" required
+                />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-lg hover:bg-[var(--surface-hover)] transition-colors">
+                  {showPassword ? <EyeOff className="w-4 h-4" style={{ color: 'var(--text-muted)' }} /> : <Eye className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />}
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" disabled={loading} className="btn-primary w-full py-2.5 text-sm flex items-center justify-center gap-2">
+              {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+              Sign In
+            </button>
+
+            <p className="text-center text-sm" style={{ color: 'var(--text-secondary)' }}>
+              Don't have an account?{' '}
+              <Link to="/signup" className="text-indigo-500 hover:text-indigo-400 font-medium transition-colors">Sign up</Link>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, FolderKanban, LogOut, Moon, Sun, Menu, X, ChevronRight,
+  LayoutDashboard, FolderKanban, LogOut, Moon, Sun, Menu, X,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -26,10 +26,7 @@ export default function AppLayout() {
   return (
     <div className="flex h-screen overflow-hidden" style={{ background: 'var(--background)' }}>
       {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur"
-          onClick={() => setSidebarOpen(false)}
-        />
+        <div className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur" onClick={() => setSidebarOpen(false)} />
       )}
 
       <aside
@@ -38,56 +35,60 @@ export default function AppLayout() {
         }`}
         style={{ background: 'var(--surface)', borderRight: '1px solid var(--border)' }}
       >
-        <div className="flex items-center gap-3 px-6 py-5" style={{ borderBottom: '1px solid var(--border)' }}>
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md shadow-indigo-500/30">
+        <div className="flex items-center gap-3 px-6 h-16 shrink-0" style={{ borderBottom: '1px solid var(--border)' }}>
+          <div className="w-9 h-9 rounded-xl bg-[var(--primary-gradient)] flex items-center justify-center shadow-lg shadow-indigo-500/25">
             <FolderKanban className="w-5 h-5 text-white" />
           </div>
           <span className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>TaskFlow</span>
-          <button className="lg:hidden ml-auto p-1 rounded-md hover:bg-[var(--surface-hover)]" onClick={() => setSidebarOpen(false)}>
-            <X className="w-5 h-5" style={{ color: 'var(--text-secondary)' }} />
+          <button className="lg:hidden ml-auto p-1.5 rounded-lg hover:bg-[var(--surface-hover)]" onClick={() => setSidebarOpen(false)}>
+            <X className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
           </button>
         </div>
 
-        <nav className="flex-1 px-3 py-4 space-y-1">
+        <nav className="flex-1 px-3 py-5 space-y-1">
           {navItems.map(({ to, icon: Icon, label }) => (
             <NavLink
               key={to}
               to={to}
               onClick={() => setSidebarOpen(false)}
               className={({ isActive }) =>
-                `group flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                `flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative ${
                   isActive
-                    ? 'bg-indigo-500/10 text-indigo-500 shadow-sm'
+                    ? 'text-white'
                     : 'hover:bg-[var(--surface-hover)]'
                 }`
               }
               style={({ isActive }) => ({
-                color: isActive ? undefined : 'var(--text-secondary)',
+                color: isActive ? 'white' : 'var(--text-secondary)',
+                background: isActive ? 'var(--primary-gradient)' : undefined,
+                boxShadow: isActive ? '0 4px 12px rgba(99, 102, 241, 0.3)' : undefined,
               })}
             >
               <Icon className="w-5 h-5 shrink-0" />
               <span className="truncate">{label}</span>
-              <ChevronRight className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--text-muted)' }} />
+              {false && (
+                <div className="absolute right-2 w-1.5 h-1.5 rounded-full bg-white/60" />
+              )}
             </NavLink>
           ))}
         </nav>
 
-        <div className="p-3 space-y-2" style={{ borderTop: '1px solid var(--border)' }}>
+        <div className="p-3 space-y-2 shrink-0" style={{ borderTop: '1px solid var(--border)' }}>
           <button
             onClick={toggleTheme}
-            className="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-[var(--surface-hover)]"
+            className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:bg-[var(--surface-hover)]"
             style={{ color: 'var(--text-secondary)' }}
           >
             <div className="w-5 h-5 flex items-center justify-center shrink-0">
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </div>
-            <span className="truncate">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+            <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
           </button>
 
-          <div className="flex items-center gap-3 px-4 py-3 rounded-lg" style={{ background: 'var(--surface-hover)' }}>
+          <div className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{ background: 'var(--surface-hover)' }}>
             <div
               className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-semibold shrink-0 ring-2 ring-[var(--surface)]"
-              style={{ backgroundColor: user?.avatar || '#6366f1' }}
+              style={{ background: 'var(--primary-gradient)' }}
             >
               {getInitials(user?.name || 'U')}
             </div>
@@ -95,7 +96,7 @@ export default function AppLayout() {
               <p className="text-sm font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{user?.name}</p>
               <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{user?.email}</p>
             </div>
-            <button onClick={handleLogout} className="p-1.5 rounded-md hover:bg-red-500/10 transition-colors" title="Logout">
+            <button onClick={handleLogout} className="p-1.5 rounded-lg hover:bg-red-500/10 transition-colors" title="Logout">
               <LogOut className="w-4 h-4 text-red-400" />
             </button>
           </div>
@@ -103,17 +104,17 @@ export default function AppLayout() {
       </aside>
 
       <main className="flex-1 overflow-y-auto">
-        <div className="lg:hidden sticky top-0 z-30 flex items-center gap-3 px-4 py-3" style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
+        <div className="lg:hidden sticky top-0 z-30 flex items-center gap-3 px-4 h-14" style={{ background: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
           <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-lg hover:bg-[var(--surface-hover)] transition-colors">
             <Menu className="w-5 h-5" style={{ color: 'var(--text-primary)' }} />
           </button>
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-sm">
+          <div className="w-8 h-8 rounded-lg bg-[var(--primary-gradient)] flex items-center justify-center shadow-sm">
             <FolderKanban className="w-4 h-4 text-white" />
           </div>
           <span className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>TaskFlow</span>
         </div>
 
-        <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
+        <div className="p-5 md:p-7 lg:p-8 max-w-7xl mx-auto">
           <Outlet />
         </div>
       </main>

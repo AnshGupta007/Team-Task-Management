@@ -64,7 +64,7 @@ export default function Dashboard() {
           </h1>
           <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>Overview of your tasks and projects</p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium" style={{ background: 'var(--primary-light)', color: 'var(--primary)' }}>
+        <div className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold" style={{ background: 'var(--primary-light)', color: 'var(--primary)' }}>
           <TrendingUp className="w-3.5 h-3.5" />
           {stats?.totalTasks || 0} total tasks
         </div>
@@ -72,14 +72,14 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {cards.map((card, i) => (
-          <div key={card.label} className="card p-4 hover:shadow-md transition-all" style={{ animationDelay: `${i * 50}ms` }}>
+          <div key={card.label} className="card p-5 hover:shadow-lg transition-all duration-200" style={{ animationDelay: `${i * 50}ms` }}>
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-lg" style={{ background: card.color + '15' }}>
+              <div className="p-3 rounded-xl" style={{ background: card.color + '12' }}>
                 <card.icon className="w-5 h-5" style={{ color: card.color }} />
               </div>
               <div>
                 <p className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{card.value}</p>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{card.label}</p>
+                <p className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>{card.label}</p>
               </div>
             </div>
           </div>
@@ -89,7 +89,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="card p-5">
           <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-            <div className="w-2 h-2 rounded-full bg-slate-400" />
+            <div className="w-2.5 h-2.5 rounded-full bg-slate-400" />
             Tasks by Status
           </h3>
           <ResponsiveContainer width="100%" height={200}>
@@ -101,16 +101,16 @@ export default function Dashboard() {
                 contentStyle={{
                   background: 'var(--surface)',
                   border: '1px solid var(--border)',
-                  borderRadius: '8px',
+                  borderRadius: '12px',
                   color: 'var(--text-primary)',
-                  boxShadow: 'var(--shadow-lg)',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
                 }}
               />
             </PieChart>
           </ResponsiveContainer>
           <div className="flex justify-center gap-4 mt-2">
             {statusData.map((s, i) => (
-              <div key={s.name} className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--text-secondary)' }}>
+              <div key={s.name} className="flex items-center gap-1.5 text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
                 <span className="w-2.5 h-2.5 rounded-full" style={{ background: STATUS_COLORS[i] }} />
                 {s.name} ({s.value})
               </div>
@@ -120,7 +120,7 @@ export default function Dashboard() {
 
         <div className="card p-5">
           <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-            <div className="w-2 h-2 rounded-full bg-blue-500" />
+            <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />
             Tasks per Member
           </h3>
           {memberData.length > 0 ? (
@@ -128,8 +128,8 @@ export default function Dashboard() {
               <BarChart data={memberData}>
                 <XAxis dataKey="name" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-primary)', boxShadow: 'var(--shadow-lg)' }} />
-                <Bar dataKey="tasks" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                <Tooltip contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', color: 'var(--text-primary)', boxShadow: '0 8px 24px rgba(0,0,0,0.12)' }} />
+                <Bar dataKey="tasks" fill="#6366f1" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
@@ -144,7 +144,7 @@ export default function Dashboard() {
 
         <div className="card p-5">
           <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-            <div className="w-2 h-2 rounded-full bg-orange-400" />
+            <div className="w-2.5 h-2.5 rounded-full bg-orange-400" />
             Tasks by Priority
           </h3>
           <ResponsiveContainer width="100%" height={200}>
@@ -152,12 +152,12 @@ export default function Dashboard() {
               <Pie data={priorityData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="value" paddingAngle={3}>
                 {priorityData.map((_, i) => <Cell key={i} fill={PRIORITY_COLORS[i]} />)}
               </Pie>
-              <Tooltip contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-primary)', boxShadow: 'var(--shadow-lg)' }} />
+              <Tooltip contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', color: 'var(--text-primary)', boxShadow: '0 8px 24px rgba(0,0,0,0.12)' }} />
             </PieChart>
           </ResponsiveContainer>
           <div className="flex flex-wrap justify-center gap-3 mt-2">
             {priorityData.map((p, i) => (
-              <div key={p.name} className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--text-secondary)' }}>
+              <div key={p.name} className="flex items-center gap-1.5 text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
                 <span className="w-2.5 h-2.5 rounded-full" style={{ background: PRIORITY_COLORS[i] }} />
                 {p.name} ({p.value})
               </div>
@@ -171,18 +171,18 @@ export default function Dashboard() {
           <Activity className="w-4 h-4" style={{ color: 'var(--primary)' }} /> Recent Activity
         </h3>
         {activity.length > 0 ? (
-          <div className="space-y-1 max-h-80 overflow-y-auto">
+          <div className="space-y-1 max-h-80 overflow-y-auto pr-1">
             {activity.map((a, i) => (
-              <div key={a.id} className="flex items-start gap-3 px-3 py-2.5 rounded-lg transition-colors hover:bg-[var(--surface-hover)]" style={{ animationDelay: `${i * 30}ms` }}>
+              <div key={a.id} className="flex items-start gap-3 px-3 py-3 rounded-xl transition-colors hover:bg-[var(--surface-hover)]" style={{ animationDelay: `${i * 30}ms` }}>
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0 mt-0.5 ring-2 ring-[var(--surface)]"
-                  style={{ backgroundColor: a.user.avatar || '#6366f1' }}
+                  style={{ background: 'var(--primary-gradient)' }}
                 >
                   {getInitials(a.user.name)}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p style={{ color: 'var(--text-primary)' }}>
-                    <span className="font-medium">{a.user.name}</span>{' '}
+                  <p className="text-sm" style={{ color: 'var(--text-primary)' }}>
+                    <span className="font-semibold">{a.user.name}</span>{' '}
                     <span style={{ color: 'var(--text-secondary)' }}>{activityLabels[a.action] || a.action}</span>
                   </p>
                   {a.details && <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{a.details}</p>}
@@ -192,9 +192,12 @@ export default function Dashboard() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-8">
-            <Activity className="w-10 h-10 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
-            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No activity yet. Create a project to get started!</p>
+          <div className="text-center py-10">
+            <div className="w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-3" style={{ background: 'var(--surface-hover)' }}>
+              <Activity className="w-7 h-7" style={{ color: 'var(--text-muted)' }} />
+            </div>
+            <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>No activity yet</p>
+            <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>Create a project to get started!</p>
           </div>
         )}
       </div>
